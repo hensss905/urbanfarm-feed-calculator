@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!-- saved from url=(0083)file:///C:/Users/henlo/Downloads/urban_farm_africa_broiler_feed_calculator_v_2.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanFarm Africa – Broiler Feed Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f5;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #1b5e20;
+    }
+    p {
+      text-align: center;
+      color: #444;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background: #2e7d32;
+      color: white;
+      border: none;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1b5e20;
+    }
+    .result {
+      margin-top: 25px;
+      background: #e8f5e9;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .result h3 {
+      color: #1b5e20;
+    }
+    .highlight {
+      background: #c8e6c9;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>UrbanFarm Africa</h1>
+    <p>Broiler Feed Requirement &amp; Best Price Calculator (42-Day Cycle)</p>
+
+    <div style="background:#f1f8e9; padding:12px; border-radius:8px; font-size:14px;">
+      <strong>Calculator Assumptions (Industry Standard – 6 Week / 42 Day Cycle):</strong><br><br>
+      <strong>Feed Intake per Bird (TOTAL):</strong><br>
+      • Starter (Day 1–14): <strong>0.45 kg</strong><br>
+      • Grower (Day 15–28): <strong>1.35 kg</strong><br>
+      • Finisher (Day 29–42): <strong>1.70 kg</strong><br>
+      • <strong>Total Feed per Broiler:</strong> 3.50 kg<br><br>
+
+      <strong>Average Daily Feed Intake per Bird:</strong><br>
+      • Starter: <strong>±32 g per bird per day</strong><br>
+      • Grower: <strong>±96 g per bird per day</strong><br>
+      • Finisher: <strong>±121 g per bird per day</strong><br><br>
+
+      <strong>Target Broiler Performance (6 Weeks):</strong><br>
+      • Target live weight at 42 days: <strong>2.2 – 2.5 kg per bird</strong><br>
+      • Feed Conversion Ratio (FCR): <strong>1.5 – 1.7</strong><br>
+      • Feed bag size used: <strong>50 kg per bag</strong>
+    </div>
+
+    <label for="birds">Number of Broiler Chickens</label>
+    <input type="number" id="birds" placeholder="e.g. 100">
+
+    <label for="company">Select Feed Supplier</label>
+    <select id="company">
+      <option value="hiperformance">Hi-Performance Feeds</option>
+      <option value="afgri">Afgri Feeds</option>
+      <option value="tau">Tau Voere</option>
+      <option value="meadow">Meadow Feeds</option>
+    </select>
+
+    <button onclick="calculateFeed()">Calculate Feed</button>
+
+    <div class="result" id="output" style="display: block;">
+        <h3>Feed Requirements</h3>
+        <p><strong>Starter:</strong> 72.0 kg (2 bags)</p>
+        <p><strong>Grower:</strong> 216.0 kg (5 bags)</p>
+        <p><strong>Finisher:</strong> 272.0 kg (6 bags)</p>
+        <hr>
+        <div class="highlight">Estimated Total Feed Cost: R 5&nbsp;030</div>
+        <p style="font-size:13px; margin-top:10px;">Prices are estimates per 50kg bag and may vary by region.</p>
+      </div>
+  </div>
+
+  <script>
+    function calculateFeed() {
+      const birds = parseInt(document.getElementById('birds').value);
+      const company = document.getElementById('company').value;
+
+      if (!birds || birds <= 0) {
+        alert('Please enter a valid number of broilers');
+        return;
+      }
+
+      // Feed intake per bird (KG) – 42 day cycle
+      const starterPerBird = 0.45;
+      const growerPerBird = 1.35;
+      const finisherPerBird = 1.70;
+
+      // Prices per 50kg bag (ESTIMATED MARKET AVERAGES)
+      const prices = {
+        hiperformance: { starter: 410, grower: 395, finisher: 385 },
+        afgri: { starter: 425, grower: 405, finisher: 395 },
+        tau: { starter: 400, grower: 390, finisher: 380 },
+        meadow: { starter: 430, grower: 415, finisher: 405 }
+      };
+
+      const starterKg = birds * starterPerBird;
+      const growerKg = birds * growerPerBird;
+      const finisherKg = birds * finisherPerBird;
+
+      const starterBags = Math.ceil(starterKg / 50);
+      const growerBags = Math.ceil(growerKg / 50);
+      const finisherBags = Math.ceil(finisherKg / 50);
+
+      const cost = prices[company];
+      const totalCost =
+        (starterBags * cost.starter) +
+        (growerBags * cost.grower) +
+        (finisherBags * cost.finisher);
+
+      const output = document.getElementById('output');
+      output.style.display = 'block';
+      output.innerHTML = `
+        <h3>Feed Requirements</h3>
+        <p><strong>Starter:</strong> ${starterKg.toFixed(1)} kg (${starterBags} bags)</p>
+        <p><strong>Grower:</strong> ${growerKg.toFixed(1)} kg (${growerBags} bags)</p>
+        <p><strong>Finisher:</strong> ${finisherKg.toFixed(1)} kg (${finisherBags} bags)</p>
+        <hr />
+        <div class="highlight">Estimated Total Feed Cost: R ${totalCost.toLocaleString()}</div>
+        <p style="font-size:13px; margin-top:10px;">Prices are estimates per 50kg bag and may vary by region.</p>
+      `;
+    }
+  </script>
+
+
+
+</body></html>
