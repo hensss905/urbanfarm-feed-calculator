@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UrbanFarm Africa Feed Calculator</title>
+<style>
+    body {font-family: Arial; background: #f7f7f7; padding: 20px;}
+    .container {background: #fff; max-width: 600px; margin: auto; padding: 25px; border-radius: 8px; box-shadow: 0px 2px 6px rgba(0,0,0,0.15);}
+    input, button, select {width: 100%; padding: 10px; margin-top: 10px; font-size: 16px;}
+    button {background: #2d6a4f; color: #fff; border: none; cursor: pointer;}
+    table {width: 100%; margin-top: 20px; border-collapse: collapse;}
+    th, td {border: 1px solid #ccc; padding: 8px; text-align: left;}
+    th {background: #eee;}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>UrbanFarm Africa Feed Calculator</h2>
+
+<label>Number of Broilers:</label>
+<input type="number" id="broilers" placeholder="Enter number of chickens" min="1">
+
+<label>Feed Brand:</label>
+<select id="brand" onchange="setPrices()">
+    <option value="">Select Brand</option>
+    <option value="Afgri">Afgri Feeds</option>
+    <option value="Meadow">Meadow Feeds</option>
+    <option value="HiPerformance">Hi Performance</option>
+    <option value="TauVoere">Tau Voere</option>
+</select>
+
+<label>Starter Feed Price (R/kg):</label>
+<input type="number" id="priceStarter" placeholder="Price per kg" value="">
+
+<label>Grower Feed Price (R/kg):</label>
+<input type="number" id="priceGrower" placeholder="Price per kg" value="">
+
+<label>Finisher Feed Price (R/kg):</label>
+<input type="number" id="priceFinisher" placeholder="Price per kg" value="">
+
+<button onclick="calculateFeed()">Calculate</button>
+
+<table id="resultsTable" style="display:none;">
+<thead>
+<tr>
+<th>Feed Phase</th>
+<th>Total Feed (kg)</th>
+<th>Bags (50kg)</th>
+<th>Cost (R)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Starter Feed</td>
+<td id="starterKg">0</td>
+<td id="starterBags">0</td>
+<td id="starterCost">0</td>
+</tr>
+<tr>
+<td>Grower Feed</td>
+<td id="growerKg">0</td>
+<td id="growerBags">0</td>
+<td id="growerCost">0</td>
+</tr>
+<tr>
+<td>Finisher Feed</td>
+<td id="finisherKg">0</td>
+<td id="finisherBags">0</td>
+<td id="finisherCost">0</td>
+</tr>
+<tr>
+<th>Total</th>
+<th id="totalKg">0</th>
+<th id="totalBags">0</th>
+<th id="totalCost">0</th>
+</tr>
+</tbody>
+</table>
+</div>
+
+<script>
+// Feed prices per brand (R/kg)
+const feedPrices = {
+    Afgri: {starter: 10.57, grower: 10.41, finisher: 10.80},
+    Meadow: {starter: 11.90, grower: 11.78, finisher: 11.58},
+    HiPerformance: {starter: 12.00, grower: 11.50, finisher: 11.30},
+    TauVoere: {starter: 11.50, grower: 11.20, finisher: 11.00}
+};
+
+function setPrices(){
+    const brand = document.getElementById('brand').value;
+    if(brand && feedPrices[brand]){
+        document.getElementById('priceStarter').value = feedPrices[brand].starter;
+        document.getElementById('priceGrower').value = feedPrices[brand].grower;
+        document.getElementById('priceFinisher').value = feedPrices[brand].finisher;
+    }
+}
+
+function calculateFeed() {
+    const num = parseInt(document.getElementById('broilers').value);
+    if (!num || num < 1) { alert("Enter valid number of chickens."); return; }
+
+    const starterPerBird = 0.6;
+    const growerPerBird = 1.6;
+    const finisherPerBird = 1.4;
+
+    const priceStarter = parseFloat(document.getElementById('priceStarter').value);
+    const priceGrower = parseFloat(document.getElementById('priceGrower').value);
+    const priceFinisher = parseFloat(document.getElementById('priceFinisher').value);
+
+    const totStarter = num * starterPerBird;
+    const totGrower = num * growerPerBird;
+    const totFinisher = num * finisherPerBird;
+    const totAll = totStarter + totGrower + totFinisher;
+
+    const costStarter = totStarter * priceStarter;
+    const costGrower = totGrower * priceGrower;
+    const costFinisher = totFinisher * priceFinisher;
+    const costTotal = costStarter + costGrower + costFinisher;
+
+    const bagSize = 50;
+    const bagsStarter = (totStarter / bagSize).toFixed(2);
+    const bagsGrower = (totGrower / bagSize).toFixed(2);
+    const bagsFinisher = (totFinisher / bagSize).toFixed(2);
+    const bagsTotal = (totAll / bagSize).toFixed(2);
+
+    document.getElementById('starterKg').innerText = totStarter.toFixed(2);
+    document.getElementById('growerKg').innerText = totGrower.toFixed(2);
+    document.getElementById('finisherKg').innerText = totFinisher.toFixed(2);
+    document.getElementById('totalKg').innerText = totAll.toFixed(2);
+
+    document.getElementById('starterBags').innerText = bagsStarter;
+    document.getElementById('growerBags').innerText = bagsGrower;
+    document.getElementById('finisherBags').innerText = bagsFinisher;
+    document.getElementById('totalBags').innerText = bagsTotal;
+
+    document.getElementById('starterCost').innerText = costStarter.toFixed(2);
+    document.getElementById('growerCost').innerText = costGrower.toFixed(2);
+    document.getElementById('finisherCost').innerText = costFinisher.toFixed(2);
+    document.getElementById('totalCost').innerText = costTotal.toFixed(2);
+
+    document.getElementById('resultsTable').st
